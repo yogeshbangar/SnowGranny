@@ -13,6 +13,8 @@ public class Menu : MonoBehaviour
     Transform mCanvasMenu;
     public Sprite[] butSprite;
     public Transform mGame;
+    int shopPNO = 0;
+    int skiNo = 0;
     Text gScore, gCoin;
     Image iStar, iMegnet;
     // Start is called before the first frame update
@@ -32,7 +34,7 @@ public class Menu : MonoBehaviour
         gCoin = transform.GetChild(5).Find("top").Find("Coin").Find("coin").GetComponent<Text>();
         iMegnet= transform.GetChild(5).Find("base").Find("magnet").Find("power").GetComponent<Image>();
         iStar = transform.GetChild(5).Find("base").Find("star").Find("power").GetComponent<Image>();
-
+        M.Open();
         setScreen(M.GAMEMENU);
     }
 
@@ -94,11 +96,13 @@ public class Menu : MonoBehaviour
                 }
                 mTrans_GrannyBig.GetChild(i).gameObject.SetActive(true);
                 setcost(i);
+                break;
             }
         }
     }
     void setcost(int no)
     {
+        shopPNO = no;
         Transform GrannyMid = transform.Find("Granny").Find("Middile");
         if (M.GRANNYCOST[no] > 0)
         {
@@ -130,8 +134,10 @@ public class Menu : MonoBehaviour
     }
     void setSkiCost(int no)
     {
+        skiNo = no;
+        Debug.Log("skiNo "+ skiNo);
         Transform GrannyMid = transform.Find("Granny").Find("Middile");
-        if (M.GRANNYCOST[no] > 0)
+        if (M.SKICOST[no] > 0)
         {
             GrannyMid.Find("cost").Find("Text").GetComponent<Text>().text = "    " + M.SKICOST[no];
             GrannyMid.Find("cost").Find("Image").gameObject.SetActive(true);
@@ -177,6 +183,7 @@ public class Menu : MonoBehaviour
             case "doller":
                 break;
             case "plus":
+                setScreen(M.GAMEBUY);
                 break;
             case "sel1":
                 setScreen(M.GAMEGRANY);
@@ -186,6 +193,53 @@ public class Menu : MonoBehaviour
             case "sel3":
                 break;
             case "cost":
+                if (M.GameScreen == M.GAMESKI)
+                {
+                    if (M.SKICOST[skiNo] > M.COINS)
+                    {
+                        transform.GetChild(7).gameObject.SetActive(true);
+                        
+                    }
+                    else
+                    {
+                        if (M.SKICOST[skiNo] > 0)
+                        {
+                            M.COINS -= M.SKICOST[skiNo];
+                            M.SKICOST[skiNo] = 0;
+                            setSkiCost(skiNo);
+                            M.Save();
+                        }
+                        else
+                        {
+                            M.SKINO = skiNo;
+                            setScreen(M.GAMEPLAY);
+                        }
+                    }
+                }
+                else
+                {
+                    if (M.GRANNYCOST[shopPNO] > M.COINS)
+                    {
+                        transform.GetChild(7).gameObject.SetActive(true);
+                        
+                    }
+                    else
+                    {
+                        if (M.GRANNYCOST[shopPNO] > 0)
+                        {
+                            M.COINS -= M.GRANNYCOST[shopPNO];
+                            M.GRANNYCOST[shopPNO] = 0;
+                            M.Save();
+                            setcost(shopPNO);
+                        }
+                        else
+                        {
+                            M.PNO = shopPNO;
+                            setScreen(M.GAMEPLAY);
+                        }
+                       
+                    }
+                }
                 break;
             case "help":
                 break;
@@ -197,6 +251,15 @@ public class Menu : MonoBehaviour
             case "home":
                 setScreen(M.GAMEMENU);
                 break;
+            case "later":
+            case "buy":
+                transform.GetChild(7).gameObject.SetActive(false);
+                if(val == "buy")
+                {
+                    setScreen(M.GAMEBUY);
+                }
+                break;
+                
         }
     }
     public void onClickSkiUp(string val)
@@ -209,16 +272,61 @@ public class Menu : MonoBehaviour
             case "doller":
                 break;
             case "plus":
+                setScreen(M.GAMEBUY);
                 break;
             case "ROSSIGNO":
                 break;
             case "VOLKL RTM":
+                if (M.SKICOST[1] > M.COINS)
+                {
+                    transform.GetChild(7).gameObject.SetActive(true);
+                }
+                else
+                {
+                    M.COINS -= M.SKICOST[1];
+                    M.SKICOST[1] = 0;
+                    setScreen(M.GAMESKIUP);
+                    M.Save();
+                }
                 break;
             case "Atomic":
+                if (M.SKICOST[2] > M.COINS)
+                {
+                    transform.GetChild(7).gameObject.SetActive(true);
+                }
+                else
+                {
+                    M.COINS -= M.SKICOST[2];
+                    M.SKICOST[2] = 0;
+                    setScreen(M.GAMESKIUP);
+                    M.Save();
+                }
                 break;
             case "Kit Deco":
+                if (M.SKICOST[3] > M.COINS)
+                {
+                    transform.GetChild(7).gameObject.SetActive(true);
+                }
+                else
+                {
+                    M.COINS -= M.SKICOST[3];
+                    M.SKICOST[3] = 0;
+                    setScreen(M.GAMESKIUP);
+                    M.Save();
+                }
                 break;
             case "Nitro":
+                if (M.SKICOST[4] > M.COINS)
+                {
+                    transform.GetChild(7).gameObject.SetActive(true);
+                }
+                else
+                {
+                    M.COINS -= M.SKICOST[4];
+                    M.SKICOST[4] = 0;
+                    setScreen(M.GAMESKIUP);
+                    M.Save();
+                }
                 break;
         }
     }
@@ -266,15 +374,25 @@ public class Menu : MonoBehaviour
             case M.GAMESKIUP:
                 no = 2;
                 mTrans_Particle.gameObject.SetActive(true);
+                transform.GetChild(no).GetChild(1).GetChild(2).GetChild(1).GetChild(1).GetComponent<Text>().text = "" + M.COINS;
+                Transform value = transform.GetChild(no).GetChild(2).GetChild(1);
+                for(int i =1; i< value.childCount; i++)
+                {
+                    if (M.SKICOST[i] == 0)
+                    {
+                        value.GetChild(i).GetChild(2).GetChild(1).GetComponent<Text>().text = "Use";
+                    }
+                }
                 break;
             case M.GAMEGRANY:
                 no = 1;
                 mTrans_GrannyShop.gameObject.SetActive(true);
-                mTrans_GrannyShop.GetChild(0).gameObject .SetActive(true);
+                mTrans_GrannyShop.GetChild(0).gameObject.SetActive(true);
                 mTrans_Granny.gameObject.SetActive(true);
                 mTrans_GrannyBig.gameObject.SetActive(true);
                 transform.GetChild(no).Find("bottom").Find("ski").Find("Image").GetComponent<Image>().sprite = butSprite[0];
                 setGranny(M.NAME[0]);
+                transform.GetChild(no).GetChild(0).GetChild(2).GetChild(1).GetComponent<Text>().text = "" + M.COINS;
                 break;
             case M.GAMESKI:
                 no = 1;

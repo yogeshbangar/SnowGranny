@@ -13,6 +13,7 @@ public class GamePlay : MonoBehaviour
     public Transform mPreCoin;
     public Transform mHardles;
     public Transform mParticle;
+    public Transform mObjSki = null;
     public Texture[] textures;
     public Renderer renderer;
     public Transform mPowers = null;
@@ -22,6 +23,7 @@ public class GamePlay : MonoBehaviour
     GameObject mSlowper = null;
     GameObject mCoin = null;
     
+
     private Vector2 fingerDown;
     private Vector2 fingerUp;
     public bool detectSwipeOnlyAfterRelease = false;
@@ -91,11 +93,20 @@ public class GamePlay : MonoBehaviour
     }
   
     public void gameReset() {
+        pNo = M.PNO;
         renderer.material.mainTexture = textures[M.MATNO % textures.Length];
         M.MATNO++;
+        Debug.Log("M.SKINO " + M.SKINO);
+
+        for (int i = 0; i < mGranny.childCount; i++)
+        {
+            mGranny.GetChild(i).gameObject.SetActive(pNo == i);
+        }
 
         mGranny.GetChild(pNo).transform.rotation = Quaternion.Euler(Vector3.zero);
         mGranny.GetChild(pNo).GetComponent<Animator>().enabled = true;
+        mGranny.GetChild(pNo).GetComponent<Player>().setSki(mObjSki.GetChild(M.SKINO).gameObject);
+
         setSKI(true);
         overCount = 0;
         M.GCOIN = 0;

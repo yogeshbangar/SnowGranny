@@ -12,11 +12,11 @@ public static class M
 	public static int []GRANNYCOST = new int[]{0,5999,8999,7999,9999,6999};
 	public static string[] NAME = new string[] { "HOMEBODY", "IMPOVERISHED", "LANKY", "MORBIDLY OBESE", "EUROPEAN", "MIDGET" };
 
-	public static int[] SKICOST = new int[] { 0, 1999, 2999, 3999, 4999, 5999 };
+	public static int[] SKICOST = new int[] { 0, 20000, 50000, 20000, 50000, 5999 };
 	public static string[] SKINAME = new string[]   { "ROSSIGNO"    , "VOLKL RTM"     , "Atomic Vantage","KIT DECO 100%","Nitro Prime", "MIDGET" };
 	public static string[] SKISUBNAME = new string[]{ "MENS PURSUIT", "8.0 Green Skis", " 90 CTI Skis"  , "Custom Rider Skis", "Snowboard" , "MIDGET" };
 	public static int UNLOCKLEVEL = 1;
-	public static int COINS = 1;
+	public static int COINS = 89999;
 	public static float coinPower = 500;
 	public static float starPower = 0;
 	public static float MAXPCOIN = 1;
@@ -36,6 +36,8 @@ public static class M
 	public const int GAMEOVER = 7;
 	public static int ParNO = 0;
 	public static int MATNO = 0;
+	public static int PNO = 0;
+	public static int SKINO = 0;
 	public static void Save ()
 	{
 		
@@ -48,7 +50,12 @@ public static class M
 			PlayerPrefs.SetInt ("d"+i, UPGEDE[i]);
 		for (int i = 0; i < GRANNYCOST.GetLength(0); i++)
 			PlayerPrefs.SetInt ("e"+i, GRANNYCOST[i]);
+
+		for (int i = 0; i < SKICOST.GetLength(0); i++)
+			PlayerPrefs.SetInt("0ee" + i, SKICOST[i]);
+
 		PlayerPrefs.SetInt ("f", UNLOCKLEVEL);
+
 		PlayerPrefs.SetInt ("g", COINS);
 
 		Debug.Log ("Save - >"+UNLOCKLEVEL);
@@ -57,6 +64,7 @@ public static class M
 
 	public static void Open ()
 	{
+		PlayerPrefs.DeleteAll();
 		setSound = PlayerPrefs.GetInt ("a", 1) == 1;
 		isAds = PlayerPrefs.GetInt ("b", 1) ==1;
 
@@ -66,6 +74,8 @@ public static class M
 			UPGEDE[i] = PlayerPrefs.GetInt ("d"+i, UPGEDE[i]);
 		for (int i = 0; i < GRANNYCOST.GetLength(0); i++)
 			GRANNYCOST[i] = PlayerPrefs.GetInt ("e"+i, GRANNYCOST[i]);
+		for (int i = 0; i < SKICOST.GetLength(0); i++)
+			SKICOST[i] = PlayerPrefs.GetInt("0ee" + i, SKICOST[i]);
 		UNLOCKLEVEL = PlayerPrefs.GetInt ("f", UNLOCKLEVEL);
 		COINS = PlayerPrefs.GetInt ("g", COINS);
 		Debug.Log ("Open - >"+UNLOCKLEVEL);
