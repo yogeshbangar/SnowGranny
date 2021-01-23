@@ -43,7 +43,7 @@ public class Player : MonoBehaviour
         }
         GameObject obj = (GameObject)Instantiate(ski, new Vector3(0, 0, 0), Quaternion.identity);
         obj.transform.parent = mObjSki.transform;
-        obj.transform.localPosition = Vector3.zero;
+        obj.transform.localPosition = new Vector3(0, 0.1f, 0.0f);
         if (M.SKINO == 2 || M.SKINO == 4)
             obj.transform.localPosition = new Vector3(-.24f, -.01f, 0.06f);
         obj.transform.localRotation = Quaternion.Euler(new Vector3(80, 180, -193));
@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
         }
         GameObject obj = (GameObject)Instantiate(ski, new Vector3(0, 0, 0), Quaternion.identity);
         obj.transform.parent = mObjSki.transform;
-        obj.transform.localPosition = new Vector3(-.08f, -.163f, -.028f);
+        obj.transform.localPosition = new Vector3(-.08f, -.163f, -.0f);
         if (M.SKINO == 2 || M.SKINO == 4)
             obj.transform.localPosition = new Vector3(0, -.15f, 0);
         obj.transform.localRotation = Quaternion.Euler(new Vector3(-170, 0, -135));
@@ -89,10 +89,10 @@ public class Player : MonoBehaviour
         }
         GameObject obj = (GameObject)Instantiate(ski, new Vector3(0, 0, 0), Quaternion.identity);
         obj.transform.parent = mObjSki.transform;
-        obj.transform.localPosition = new Vector3(-.08f, -.153f, -.028f);
+        obj.transform.localPosition = new Vector3(-.08f, -.153f, -.0f);
         if (M.SKINO == 2 || M.SKINO == 4)
             obj.transform.localPosition = new Vector3(0, -.15f, 0);
-        obj.transform.localRotation = Quaternion.Euler(new Vector3(-170, 0, -135));
+        obj.transform.localRotation = Quaternion.Euler(new Vector3(-5, 185, 40));
         obj.transform.localScale = new Vector3(.15f, .15f, .15f);
     }
     public void setSki_3(GameObject ski)

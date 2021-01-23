@@ -18,7 +18,7 @@ public class Coin : MonoBehaviour
         {
             transform.position += Vector3.forward * M.SPD;
             if(transform.position.z > -10 && transform.position.z < 15 && M.coinPower > 0)
-                transform.position = Vector3.MoveTowards(transform.position, new Vector3(vec.x, vec.y+3, 1), 40 * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, new Vector3(vec.x, vec.y+3, 1), 60 * Time.deltaTime);
         }
         if (status == 1)
         {

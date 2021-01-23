@@ -34,6 +34,7 @@ public static class M
 	public const int GAMESKI = 5;
 	public  const int GAMEPLAY = 6;
 	public const int GAMEOVER = 7;
+	public const int GAMEPAUSE = 8;
 	public static int ParNO = 0;
 	public static int MATNO = 0;
 	public static int PNO = 0;

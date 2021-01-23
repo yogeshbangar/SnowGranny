@@ -11,12 +11,14 @@ public class Menu : MonoBehaviour
     Transform mTrans_Ski;
     Transform mTrans_Particle;
     Transform mCanvasMenu;
+    
     public Sprite[] butSprite;
     public Transform mGame;
     int shopPNO = 0;
     int skiNo = 0;
     Text gScore, gCoin;
     Image iStar, iMegnet;
+    bool isResume = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,7 +37,9 @@ public class Menu : MonoBehaviour
         iMegnet= transform.GetChild(5).Find("base").Find("magnet").Find("power").GetComponent<Image>();
         iStar = transform.GetChild(5).Find("base").Find("star").Find("power").GetComponent<Image>();
         M.Open();
+        AdManager.Instance.Init();
         setScreen(M.GAMEMENU);
+        
     }
 
     // Update is called once per frame
@@ -170,6 +174,7 @@ public class Menu : MonoBehaviour
                 setScreen(M.GAMEBUY);
                 break;
             case "Taptoplay":
+                isResume = false;
                 setScreen(M.GAMEPLAY);
                 break;
         }
@@ -197,8 +202,7 @@ public class Menu : MonoBehaviour
                 {
                     if (M.SKICOST[skiNo] > M.COINS)
                     {
-                        transform.GetChild(7).gameObject.SetActive(true);
-                        
+                        setPopUp(true);
                     }
                     else
                     {
@@ -220,8 +224,7 @@ public class Menu : MonoBehaviour
                 {
                     if (M.GRANNYCOST[shopPNO] > M.COINS)
                     {
-                        transform.GetChild(7).gameObject.SetActive(true);
-                        
+                        setPopUp(true);
                     }
                     else
                     {
@@ -253,14 +256,18 @@ public class Menu : MonoBehaviour
                 break;
             case "later":
             case "buy":
-                transform.GetChild(7).gameObject.SetActive(false);
-                if(val == "buy")
+                setPopUp(false);
+                if (val == "buy")
                 {
                     setScreen(M.GAMEBUY);
                 }
                 break;
                 
         }
+    }
+    public void setPopUp(bool visible)
+    {
+        transform.Find("PopUp").gameObject.SetActive(visible);
     }
     public void onClickSkiUp(string val)
     {
@@ -279,7 +286,7 @@ public class Menu : MonoBehaviour
             case "VOLKL RTM":
                 if (M.SKICOST[1] > M.COINS)
                 {
-                    transform.GetChild(7).gameObject.SetActive(true);
+                    setPopUp(true);
                 }
                 else
                 {
@@ -292,7 +299,7 @@ public class Menu : MonoBehaviour
             case "Atomic":
                 if (M.SKICOST[2] > M.COINS)
                 {
-                    transform.GetChild(7).gameObject.SetActive(true);
+                    setPopUp(true);
                 }
                 else
                 {
@@ -305,7 +312,7 @@ public class Menu : MonoBehaviour
             case "Kit Deco":
                 if (M.SKICOST[3] > M.COINS)
                 {
-                    transform.GetChild(7).gameObject.SetActive(true);
+                    setPopUp(true);
                 }
                 else
                 {
@@ -318,7 +325,7 @@ public class Menu : MonoBehaviour
             case "Nitro":
                 if (M.SKICOST[4] > M.COINS)
                 {
-                    transform.GetChild(7).gameObject.SetActive(true);
+                    setPopUp(true);
                 }
                 else
                 {
@@ -327,6 +334,18 @@ public class Menu : MonoBehaviour
                     setScreen(M.GAMESKIUP);
                     M.Save();
                 }
+                break;
+        }
+    }
+    public void onClickPause(string val) {
+        switch (val)
+        {
+            case "pause":
+                setScreen(M.GAMEPAUSE);
+                break;
+            case "resume":
+                isResume = true;
+                setScreen(M.GAMEPLAY);
                 break;
         }
     }
@@ -413,8 +432,11 @@ public class Menu : MonoBehaviour
                 Camera.main.transform.position = new Vector3(0, 12f, -12);
                 Camera.main.transform.rotation = Quaternion.Euler(25, 0, 0);
                 mGame.gameObject.SetActive(true);
-                mGame.GetComponent<GamePlay>().gameReset();
+                if(isResume == false)
+                    mGame.GetComponent<GamePlay>().gameReset();
                 no = 5;
+                isResume = false;
+                
                 break;
             case M.GAMEOVER:
                 no = 6;
@@ -434,6 +456,17 @@ public class Menu : MonoBehaviour
                 }
                 transform.GetChild(no).Find("Middile").Find("Score").Find("no").GetComponent<Text>().text = M.GSOCRE + "";
                 transform.GetChild(no).Find("Middile").Find("Coin").Find("no").GetComponent<Text>().text = M.GCOIN+ "";
+                transform.GetChild(no).GetChild(0).GetChild(2).GetChild(1).GetComponent<Text>().text = "" + M.COINS;
+                AdManager.Instance.ShowInterstitial();
+                break;
+            case M.GAMEPAUSE:
+                AdManager.Instance.ShowInterstitial();
+                no = 7;
+                mCanvasMenu.gameObject.SetActive(true);
+                mTrans_Particle.gameObject.SetActive(true);
+                transform.GetChild(no).GetChild(0).GetChild(2).GetChild(1).GetComponent<Text>().text = "" + M.COINS;
+                transform.GetChild(no).Find("Middile").Find("Score").Find("no").GetComponent<Text>().text = M.GSOCRE + "";
+                transform.GetChild(no).Find("Middile").Find("Coin").Find("no").GetComponent<Text>().text = M.GCOIN + "";
                 break;
 
         }

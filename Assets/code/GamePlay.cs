@@ -13,6 +13,7 @@ public class GamePlay : MonoBehaviour
     public Transform mPreCoin;
     public Transform mHardles;
     public Transform mParticle;
+    public Transform mCop;
     public Transform mObjSki = null;
     public Texture[] textures;
     public Renderer renderer;
@@ -37,8 +38,9 @@ public class GamePlay : MonoBehaviour
     public float sdis = 0;
     float MINDIS = -80;
     int overCount = 0;
+    float goBack = 0;
     bool isSlide = false;
-
+    bool isJump = false;
     float clicked = 0;
     float clicktime = 0;
     float clickdelay = 0.5f;
@@ -91,7 +93,12 @@ public class GamePlay : MonoBehaviour
             gameReset();
         }
     }
-  
+    public void gameResume()
+    {
+        mGranny.GetChild(pNo).GetComponent<Animator>().enabled = true;
+        mGranny.GetChild(pNo).GetComponent<Animator>().SetInteger("state", 0);
+    }
+
     public void gameReset() {
         pNo = M.PNO;
         renderer.material.mainTexture = textures[M.MATNO % textures.Length];
@@ -106,13 +113,14 @@ public class GamePlay : MonoBehaviour
         mGranny.GetChild(pNo).transform.rotation = Quaternion.Euler(Vector3.zero);
         mGranny.GetChild(pNo).GetComponent<Animator>().enabled = true;
         mGranny.GetChild(pNo).GetComponent<Player>().setSki(mObjSki.GetChild(M.SKINO).gameObject);
-
+        
         setSKI(true);
         overCount = 0;
         M.GCOIN = 0;
         M.GSOCRE = 0;
         
         mPos = Vector3.zero;
+        mCop.position += mPos + Vector3.back*4;
         if (mStopper == null)
         {
             Start();
@@ -165,6 +173,7 @@ public class GamePlay : MonoBehaviour
             }
         }
         setHurdle(100);
+        goBack = 0;
     }
 
     void setHurdle(int z) {
@@ -437,10 +446,17 @@ public class GamePlay : MonoBehaviour
         }
         mGranny.GetChild(pNo).transform.position = mPos;
 
+        if(goBack > 50)
+            mCop.position = new Vector3(mPos.x, mPos.y, mCop.position.z-.1f);
+        else
+        {
+            goBack++;
+            mCop.position = new Vector3(mPos.x, mPos.y, mCop.position.z);
+        }
         //
 
 
-        Camera.main.transform.position = new Vector3(mPos.x * .8f, mPos.y + 12f, -12);
+        Camera.main.transform.position = new Vector3(mPos.x * .8f, mPos.y + 11f, -20);
 
         //Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, new Vector3(pos.x * .8f, pos.y + 12f, -12), Time.deltaTime * 20);
 
@@ -525,6 +541,9 @@ public class GamePlay : MonoBehaviour
                 Debug.Log(isSlide+ " state  1");
             }
         }
+        else{
+            isJump = false;
+        }
         if(roll > 0)
         {
             roll--;
@@ -557,9 +576,14 @@ public class GamePlay : MonoBehaviour
                 }
             }
         }
-        if (M.SPD > -.9)
+        if (M.SPD > -1.9)
         {
-            M.SPD -= .01f;
+            if (M.SPD > -.9)
+                M.SPD -= .01f;
+            if (M.SPD > -1.9)
+            {
+                M.SPD -= .0001f;
+            }
         }
         if (overCount > 0)
         {
@@ -692,8 +716,13 @@ public class GamePlay : MonoBehaviour
     void OnSwipeUp()
     {
         //mGranny.GetChild(pNo).GetComponent<Animator>().SetInteger("state", 1);
-        valocity.y = 1f;
-        mPos.y += valocity.y;
+        if(isJump == false)
+        {
+            valocity.y = .81f;
+            mPos.y += valocity.y;
+            isJump = true;
+        }
+        
         //StartCoroutine(CheckAnimationCompleted("Jump", () =>{
         //    mGranny.GetChild(pNo).GetComponent<Animator>().SetInteger("state", 0);
         //}
